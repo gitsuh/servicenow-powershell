@@ -1,5 +1,6 @@
 #steven goodpaster
 #6/29/2017
+
 function servicenow-build-header {
 	Param(
 			[System.Management.Automation.CredentialAttribute()]$credential,
@@ -35,26 +36,26 @@ function servicenow-build-header {
 	}
 function servicenow-builduri-sysid {
 	Param(
-			$sninstance,
-			$tablename,
-			$sysid
+			[Parameter(Mandatory=$true)][string]$sninstance,
+			[Parameter(Mandatory=$true)][string]$tablename,
+			[Parameter(Mandatory=$true)][string]$sysid
 		)	
 		return "https://" + $sninstance + ".service-now.com/api/now/table/" + $tablename + "/" + $sysid
 	}
 function servicenow-builduri-searchlike {
 	Param(
-			$sninstance,
-			$tablename,
-			$namelike
+			[Parameter(Mandatory=$true)][string]$sninstance,
+			[Parameter(Mandatory=$true)][string]$tablename,
+			[Parameter(Mandatory=$true)][string]$namelike
 		)
 		return "https://" + $sninstance + ".service-now.com/api/now/table/" + $tablename + "?sysparm_query=nameLIKE" + $namelike + "&sysparm_fields=sys_id%2Cname&sysparm_limit=1"
 	}
 function servicenow-builduri-gettable-pagination {
 	Param(
-			$sninstance,
-			$tablename,
-			$totalpages,
-			$pagesize
+			[Parameter(Mandatory=$true)][string]$sninstance,
+			[Parameter(Mandatory=$true)][string]$tablename,
+			[Parameter(Mandatory=$true)][string]$totalpages,
+			[Parameter(Mandatory=$true)][string]$pagesize
 		)		
 		$list = New-Object System.Collections.Generic.List[System.Object]
 		$page = 0
@@ -76,14 +77,14 @@ function servicenow-getsysid {
 			$content = servicenow-request -uri $uri -headerobject $headerobject
 			if($content -ne $null){
 				$nojson = convertfrom-json -inputobject $content
-				if($content -like "*sys_id*"){ #should improve this check
+				if($content -like "*sys_id*"){ #should improve this condition check
 					$sysid = $($content | convertfrom-json | select -expand result | Select sys_id).sys_id
 					return $sysid
 				}
 			}
 		return $null
 	}
-function servicenow-patchbysysid {
+function servicenow-patchbysysid { #need to remove tablename requirement
 	Param(
 			[System.Management.Automation.CredentialAttribute()]$credential,
 			[Parameter(Mandatory=$true)][string]$sninstance,
@@ -109,9 +110,9 @@ function bodycontent-dynamic {
 	}
 function servicenow-request {
 	Param(
-			$uri,
-			$headerobject,
-			$jsonbody
+			[Parameter(Mandatory=$true)][string]$uri,
+			[Parameter(Mandatory=$true)]$headerobject,
+			[Parameter(Mandatory=$false)]$jsonbody
 		)
 			try{
 				if($jsonbody.IsPresent){
