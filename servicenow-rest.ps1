@@ -1,10 +1,9 @@
 #steven goodpaster
 #6/29/2017
-
 function servicenow-build-header {
 	Param(
-			[System.Management.Automation.CredentialAttribute()]$credential,
-			[string]$methodtype
+			[Parameter(Mandatory=$true)][System.Management.Automation.CredentialAttribute()]$credential,
+			[Parameter(Mandatory=$true)][string]$methodtype
 		)
 			$headerobject = New-Object System.Object
 			$user = $credential.GetNetworkCredential().username
@@ -67,7 +66,7 @@ function servicenow-builduri-gettable-pagination {
     }
 function servicenow-getsysid {
 	Param(
-			[System.Management.Automation.CredentialAttribute()]$credential,
+			[Parameter(Mandatory=$true)][System.Management.Automation.CredentialAttribute()]$credential,
 			[Parameter(Mandatory=$true)][string]$sninstance,
 			[Parameter(Mandatory=$true)][string]$namelike,
 			[Parameter(Mandatory=$true)][string]$tablename		
