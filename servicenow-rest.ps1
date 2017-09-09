@@ -1,5 +1,3 @@
-#steven goodpaster
-#6/29/2017
 function servicenow-header {
 	Param(
 			[Parameter(Mandatory=$true)][System.Management.Automation.CredentialAttribute()]$credential,
